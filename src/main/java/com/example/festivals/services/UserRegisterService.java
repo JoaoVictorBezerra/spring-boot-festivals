@@ -17,7 +17,7 @@ public class UserRegisterService {
   public RegisterUserResponseDTO execute(RegisterUserRequestDTO newUser) throws Exception {
     try {
       return new RegisterUserResponseDTO(this.userRepository.save(
-          new User(newUser.fullName(), newUser.birthday(), newUser.email(), newUser.password())
+          new User(newUser.fullName(), newUser.birthday(), newUser.email(), newUser.password(), newUser.role())
       ));
     } catch (Exception e) {
       throw new Exception("Não foi possível registrar o usuário");
