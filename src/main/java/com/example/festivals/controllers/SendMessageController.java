@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class SendMessageController {
 
   private final SmsSender sendMessageService;
-
-  @Autowired
   public SendMessageController(TwilioService sendMessageService) {
     this.sendMessageService = sendMessageService;
   }

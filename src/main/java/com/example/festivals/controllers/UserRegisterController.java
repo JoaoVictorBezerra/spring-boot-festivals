@@ -1,10 +1,8 @@
 package com.example.festivals.controllers;
 
 import com.example.festivals.dto.request.RegisterUserRequestDTO;
-import com.example.festivals.repository.UserRepository;
 import com.example.festivals.services.UserRegisterService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserRegisterController {
 
   private final UserRegisterService userRegisterService;
-  @Autowired
   public UserRegisterController(UserRegisterService userRegisterService) {
     this.userRegisterService = userRegisterService;
   }
