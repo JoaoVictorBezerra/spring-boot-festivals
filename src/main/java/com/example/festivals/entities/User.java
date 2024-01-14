@@ -1,20 +1,28 @@
 package com.example.festivals.entities;
 
+import com.example.festivals.core.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.joda.time.DateTime;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
+@AllArgsConstructor
 @Entity(name = "users")
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
@@ -23,42 +31,50 @@ public class User {
   private String birthday;
   private String email;
   private String password;
+  private UserRole role;
   private DateTime createdAt;
   private DateTime updatedAt;
 
-  public User(String fullName, String birthday, String email, String password) {
+  public User(String fullName, String birthday, String email, String password, UserRole role) {
     this.fullName = fullName;
     this.birthday = birthday;
     this.email = email;
     this.password = password;
+    this.role = role;
     this.createdAt = DateTime.now();
     this.updatedAt = null;
   }
 
-  public User(UUID id, String fullName, String birthday, String email, String password, DateTime createdAt, DateTime updatedAt) {
-    this.id = id;
-    this.fullName = fullName;
-    this.birthday = birthday;
-    this.email = email;
-    this.password = password;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-  }
+  public User() {}
 
-  public User() {
-
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+    else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
   }
 
   @Override
-  public String toString() {
-    return "User{" +
-        "id=" + id +
-        ", fullName='" + fullName + '\'' +
-        ", birthday='" + birthday + '\'' +
-        ", email='" + email + '\'' +
-        ", password='" + password + '\'' +
-        ", createdAt=" + createdAt +
-        ", updatedAt=" + updatedAt +
-        '}';
+  public String getUsername() {
+    return this.email;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
   }
 }
