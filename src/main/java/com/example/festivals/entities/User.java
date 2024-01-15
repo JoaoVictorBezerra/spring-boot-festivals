@@ -2,50 +2,44 @@ package com.example.festivals.entities;
 
 import com.example.festivals.core.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import org.joda.time.DateTime;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "users")
 @Table(name = "users")
 public class User implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+  private String id;
 
-  private String fullName;
-  private String birthday;
+  private String name;
   private String email;
   private String password;
+  private String birthday;
   private UserRole role;
-  private DateTime createdAt;
-  private DateTime updatedAt;
+  private String createdAt;
+  private String updatedAt;
 
-  public User(String fullName, String birthday, String email, String password, UserRole role) {
-    this.fullName = fullName;
-    this.birthday = birthday;
+  public User(String name, String email, String password, String birthday, UserRole role, String createdAt) {
+    this.name = name;
     this.email = email;
     this.password = password;
+    this.birthday = birthday;
     this.role = role;
-    this.createdAt = DateTime.now();
+    this.createdAt = createdAt;
     this.updatedAt = null;
   }
-
-  public User() {}
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -55,7 +49,7 @@ public class User implements UserDetails {
 
   @Override
   public String getUsername() {
-    return this.email;
+    return email;
   }
 
   @Override
