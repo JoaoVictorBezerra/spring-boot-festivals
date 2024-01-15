@@ -24,7 +24,7 @@ public class SendMessageController {
   public ResponseEntity<String> sendSms(@RequestBody SmsSenderRequestDTO cellphone) {
     try {
       this.sendMessageService.sendSms(cellphone.cellphone(), cellphone.body());
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sms sent successfully");
+      return ResponseEntity.status(HttpStatus.OK).body("Sms sent successfully");
     } catch(Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
