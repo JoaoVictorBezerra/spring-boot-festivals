@@ -1,14 +1,13 @@
 package com.example.festivals.controllers;
 
-import com.example.festivals.dto.request.LoginRequestDTO;
+import com.example.festivals.dto.ErrorResponseDTO;
+import com.example.festivals.dto.request.AuthenticationDTO;
 import com.example.festivals.dto.request.RegisterUserRequestDTO;
 import com.example.festivals.services.AuthorizationService;
 import com.example.festivals.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,24 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthenticationController {
 
-  private final AuthorizationService authorizationService;
-  private final AuthenticationManager authenticationManager;
-
   private final UserService userService;
-  public AuthenticationController(AuthorizationService authorizationService, AuthenticationManager authenticationManager, UserService userService) {
-    this.authorizationService = authorizationService;
-    this.authenticationManager = authenticationManager;
+
+  public AuthenticationController(UserService userService) {
     this.userService = userService;
   }
 
   @PostMapping("/login")
-  public ResponseEntity login(@RequestBody LoginRequestDTO user) {
+  public ResponseEntity<?> login(@RequestBody @Valid AuthenticationDTO user) {
     try {
-      var emailAndPassword = new UsernamePasswordAuthenticationToken(user.email(), user.password());
-      var auth = this.authenticationManager.authenticate(emailAndPassword);
-      return ResponseEntity.status(HttpStatus.OK).body(authorizationService.login(user.email(), user.password()));
+      return ResponseEntity.ok(userService.login(user));
     } catch(Exception e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+      return ResponseEntity.status(400).body(new ErrorResponseDTO(e.getMessage()));
     }
   }
 
